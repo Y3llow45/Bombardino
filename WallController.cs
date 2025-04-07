@@ -8,8 +8,8 @@ public class WallController : MonoBehaviour
     public Material wallGoodMaterial;
     public Material wallBadMaterial;
 
+    private bool triggered = false;
     private int cloneAmount;
-    private bool hasPassed = false;
 
     void Start()
     {
@@ -25,12 +25,32 @@ public class WallController : MonoBehaviour
         wallRenderer.material = sign > 0 ? wallGoodMaterial : wallBadMaterial;
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !hasPassed)
+        if (triggered) return;
+
+        if (other.CompareTag("Player"))
         {
-            hasPassed = true;
-            Debug.Log($"Wall hit: {cloneAmount}");
+            triggered = true;
+            ApplyMathEffect();
+        }
+    }
+
+    private void ApplyMathEffect()
+    {
+        GameController gameController = FindObjectOfType<GameController>();
+        if (gameController == null) return;
+
+        string sign = signText.text;
+        int number = int.Parse(numberText.text);
+
+        if (sign == "+")
+        {
+            gameController.SpawnSoldiers(number);
+        }
+        else
+        {
+            gameController.RemoveSoldiers(number);
         }
     }
 }
