@@ -73,7 +73,8 @@ public class GameController : MonoBehaviour
 
         foreach (Vector3 pos in spawnPositions)
         {
-            GameObject newSoldier = Instantiate(mainPlayer, pos, Quaternion.identity);
+            //GameObject newSoldier = Instantiate(mainPlayer, pos, Quaternion.identity);
+            GameObject newSoldier = Instantiate(mainPlayer, pos, mainPlayer.transform.rotation);
             newSoldier.name = "SoldierClone";
             PlayerController follower = newSoldier.GetComponent<PlayerController>();
             newSoldier.SetActive(true);
