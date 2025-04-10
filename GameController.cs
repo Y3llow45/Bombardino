@@ -101,12 +101,4 @@ public class GameController : MonoBehaviour
             }
         }
     }
-
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            pauseMenu.TogglePause();
-        }
-    }
 }
