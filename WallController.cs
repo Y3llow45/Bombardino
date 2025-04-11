@@ -10,47 +10,56 @@ public class WallController : MonoBehaviour
 
     private bool triggered = false;
     private int cloneAmount;
+    private static int wallIndex = 0;
+    private static bool firstIsPositive = true;
 
     void Start()
     {
-        int sign = Random.Range(0, 2) == 0 ? 1 : -1;
+        int currentIndex = wallIndex++;
+        int totalWalls = FindObjectsOfType<WallController>().Length;
+
+        int sign = (currentIndex == 0) ? 1 :
+                  (currentIndex == 1) ? -1 :
+                  Random.Range(0, 2) == 0 ? 1 : -1;
+
+        if (currentIndex == 1 && totalWalls > 2)
+        {
+            firstIsPositive = Random.Range(0, 2) == 0;
+            sign = firstIsPositive ? -1 : 1;
+        }
+
         int number = Random.Range(1, 6);
         cloneAmount = sign * number;
 
         signText.text = sign > 0 ? "+" : "-";
         numberText.text = number.ToString();
-
-        // set color
-        Renderer wallRenderer = GetComponent<Renderer>();
-        wallRenderer.material = sign > 0 ? wallGoodMaterial : wallBadMaterial;
+        GetComponent<Renderer>().material = sign > 0 ? wallGoodMaterial : wallBadMaterial;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (triggered) return;
+        if (triggered || !other.CompareTag("Player")) return;
 
-        if (other.CompareTag("Player"))
-        {
-            triggered = true;
-            ApplyMathEffect();
-        }
+        triggered = true;
+        ApplyMathEffect();
     }
 
     private void ApplyMathEffect()
     {
         GameController gameController = FindObjectOfType<GameController>();
-        if (gameController == null) return;
-
-        string sign = signText.text;
-        int number = int.Parse(numberText.text);
-
-        if (sign == "+")
+        if (gameController != null)
         {
-            gameController.SpawnSoldiers(number);
+            int number = int.Parse(numberText.text);
+            if (signText.text == "+")
+                gameController.SpawnSoldiers(number);
+            else
+                gameController.RemoveSoldiers(number);
         }
-        else
-        {
-            gameController.RemoveSoldiers(number);
-        }
+    }
+
+    void OnDestroy()
+    {
+        if (wallIndex == FindObjectsOfType<WallController>().Length)
+            wallIndex = 0;
     }
 }
