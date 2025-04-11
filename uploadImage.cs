@@ -60,7 +60,6 @@ public class ImageUploader : MonoBehaviour
             {
                 Debug.Log("raw image is dumb");
             }
-            //teacherMaterial.mainTexture = texture;
             if (teacherMaterial != null)
             {
                 teacherMaterial.mainTexture = texture;
@@ -69,14 +68,6 @@ public class ImageUploader : MonoBehaviour
             {
                 Debug.LogError("teacherMaterial is not assigned in the Inspector!");
             }
-            /*if (teacherMaterial != null)
-            {
-                teacherMaterial.mainTexture = texture;
-            }
-            else
-            {
-                Debug.LogError("teacherMaterial is not assigned!");
-            }*/
         }, fileTypes);
     }
 }
