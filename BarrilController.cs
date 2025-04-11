@@ -6,7 +6,7 @@ public class BarrelController : MonoBehaviour
     public int minHits = 10;
     public int maxHits = 100;
     public float maxDistance = 100f;
-    public TextMeshProUGUI hitsRemainingText;
+    public TextMeshPro hitsRemainingText;
 
     private int hitsRequired;
     private int currentHits = 0;
@@ -20,26 +20,25 @@ public class BarrelController : MonoBehaviour
         Debug.Log($"Barrel at {transform.position} requires {hitsRequired} hits");
     }
 
-    void OnTriggerEnter(Collider other)
+    public void RegisterHit()
     {
-        if (other.gameObject.CompareTag("Bullet"))
+        Debug.Log("Barrel hit via raycast");
+        currentHits++;
+        UpdateHitsText();
+        if (currentHits >= hitsRequired)
         {
-            currentHits++;
-            UpdateHitsText();
-            if (currentHits >= hitsRequired)
-            {
-                Destroy(gameObject);
-                Debug.Log("Barrel destroyed");
-            }
+            PlayerController.IncreaseFireRate();
+            Debug.Log("Barrel destroyed");
+            Destroy(gameObject);
         }
     }
 
-    void UpdateHitsText()
+    public void UpdateHitsText()
     {
         if (hitsRemainingText != null)
         {
             int hitsLeft = Mathf.Max(0, hitsRequired - currentHits);
-            hitsRemainingText.text = "Hits left: " + hitsLeft;
+            hitsRemainingText.text = "" + hitsLeft;
         }
     }
 }

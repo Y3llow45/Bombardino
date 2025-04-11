@@ -59,22 +59,22 @@ public class GameController : MonoBehaviour
         soldierCount += amount;
         Debug.Log($"Total soldiers: {soldierCount}");
 
-        List<Vector3> spawnPositions = new List<Vector3>();
+        int columns = 4;
+        float spacing = 1.5f;
 
         for (int i = 0; i < amount; i++)
         {
             AddScore(10);
-            float offsetX = (i % 2 == 0 ? 1.5f : -1.5f) * ((i / 2) + 1);
-            float offsetZ = (i / 2) * 1.5f;
+
+            int row = i / columns;
+            int col = i % columns;
+
+            float offsetX = -row * spacing;
+            float offsetZ = (col - 1.5f) * spacing;
+
             Vector3 spawnPosition = mainPlayer.transform.position + new Vector3(offsetX, 0, offsetZ);
 
-            spawnPositions.Add(spawnPosition);
-        }
-
-        foreach (Vector3 pos in spawnPositions)
-        {
-            //GameObject newSoldier = Instantiate(mainPlayer, pos, Quaternion.identity);
-            GameObject newSoldier = Instantiate(mainPlayer, pos, mainPlayer.transform.rotation);
+            GameObject newSoldier = Instantiate(mainPlayer, spawnPosition, mainPlayer.transform.rotation);
             newSoldier.name = "SoldierClone";
             PlayerController follower = newSoldier.GetComponent<PlayerController>();
             newSoldier.SetActive(true);
