@@ -11,24 +11,24 @@ public class WallController : MonoBehaviour
     private bool triggered = false;
     private int cloneAmount;
     private static int wallIndex = 0;
-
-    // Hardcoded number and sign for each wall
-    private static readonly (int number, int sign)[] wallValues = new (int, int)[]
-    {
-        (2, 1),  // Wall 0: +2
-        (1, -1), // Wall 1: -1
-        (3, 1),  // Wall 2: +3
-        (2, -1), // Wall 3: -2
-        (4, 1),  // Wall 4: +4
-        (3, -1)  // Wall 5: -3
-    };
+    private static bool firstIsPositive = true;
 
     void Start()
     {
         int currentIndex = wallIndex++;
-        // Get number and sign from array, default to last value if index exceeds array
-        (int number, int sign) = currentIndex < wallValues.Length ? wallValues[currentIndex] : wallValues[wallValues.Length - 1];
+        int totalWalls = FindObjectsOfType<WallController>().Length;
 
+        int sign = (currentIndex == 0) ? 1 :
+                  (currentIndex == 1) ? -1 :
+                  Random.Range(0, 2) == 0 ? 1 : -1;
+
+        if (currentIndex == 1 && totalWalls > 2)
+        {
+            firstIsPositive = Random.Range(0, 2) == 0;
+            sign = firstIsPositive ? -1 : 1;
+        }
+
+        int number = Random.Range(1, 6);
         cloneAmount = sign * number;
 
         signText.text = sign > 0 ? "+" : "-";
