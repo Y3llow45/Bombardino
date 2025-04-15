@@ -45,7 +45,18 @@ public class GameController : MonoBehaviour
     public void MainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("SampleScene");
+        //SceneManager.LoadScene("Level1");
+        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        SceneManager.LoadScene("Level" + currentLevel);
+        if (currentLevel < 2)
+        {
+            PlayerPrefs.SetInt("CurrentLevel", currentLevel + 1);
+        }
+        else 
+        {
+            PlayerPrefs.SetInt("CurrentLevel", 1);
+        }
+        
     }
 
     public void SpawnSoldiers(int amount)
@@ -59,37 +70,38 @@ public class GameController : MonoBehaviour
         soldierCount += amount;
         Debug.Log($"Total soldiers: {soldierCount}");
 
-        int columns = 4;
-        float spacing = 1.5f;
+        int clonesPerRow = 3;
+        float spacing = 0.8f;
+        Vector3 playerPos = mainPlayer.transform.position;
+
+        int existingClones = soldierCount - amount - 1;
+        int startRow = existingClones / clonesPerRow;
 
         for (int i = 0; i < amount; i++)
         {
-            AddScore(10);
+            int cloneIndex = existingClones + i;
+            int row = cloneIndex / clonesPerRow;
+            int col = cloneIndex % clonesPerRow;
 
-            int row = i / columns;
-            int col = i % columns;
+            float offsetX = -(row + 1) * spacing;
+            float offsetZ = (col - 1) * spacing;
+            Vector3 spawnPosition = playerPos + new Vector3(offsetX, 0, offsetZ);
 
-            float offsetX = -row * spacing;
-            float offsetZ = (col - 1.5f) * spacing;
-
-            Vector3 spawnPosition = mainPlayer.transform.position + new Vector3(offsetX, 0, offsetZ);
-
-            GameObject newSoldier = Instantiate(mainPlayer, spawnPosition, mainPlayer.transform.rotation);
+            Quaternion spawnRotation = Quaternion.Euler(0, 90, 0);
+            GameObject newSoldier = Instantiate(mainPlayer, spawnPosition, spawnRotation);
             newSoldier.name = "SoldierClone";
-            PlayerController follower = newSoldier.GetComponent<PlayerController>();
+            newSoldier.tag = "SoldierClone";
             newSoldier.SetActive(true);
+
+            AddScore(10);
         }
     }
 
     public void RemoveSoldiers(int amount)
     {
-        soldierCount -= amount;
-        if (soldierCount < 1)
-        {
-            GameOver();
-        }
+        if (amount <= 0) return;
 
-        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] soldiers = GameObject.FindGameObjectsWithTag("SoldierClone");
         int removed = 0;
 
         foreach (GameObject soldier in soldiers)
@@ -98,7 +110,17 @@ public class GameController : MonoBehaviour
             {
                 Destroy(soldier);
                 removed++;
+                Debug.Log($"Removed soldier: {soldier.name}, Total removed: {removed}");
             }
+        }
+
+        soldierCount -= removed;
+        Debug.Log($"Total soldiers: {soldierCount}");
+
+        if (soldierCount < 1)
+        {
+            Debug.Log("Triggering Game Over: No soldiers left");
+            GameOver();
         }
     }
 }
