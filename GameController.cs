@@ -45,18 +45,16 @@ public class GameController : MonoBehaviour
     public void MainMenu()
     {
         Time.timeScale = 1f;
-        //SceneManager.LoadScene("Level1");
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
         SceneManager.LoadScene("Level" + currentLevel);
         if (currentLevel < 2)
         {
             PlayerPrefs.SetInt("CurrentLevel", currentLevel + 1);
         }
-        else 
+        else
         {
             PlayerPrefs.SetInt("CurrentLevel", 1);
         }
-        
     }
 
     public void SpawnSoldiers(int amount)
@@ -116,11 +114,5 @@ public class GameController : MonoBehaviour
 
         soldierCount -= removed;
         Debug.Log($"Total soldiers: {soldierCount}");
-
-        if (soldierCount < 1)
-        {
-            Debug.Log("Triggering Game Over: No soldiers left");
-            GameOver();
-        }
     }
 }
