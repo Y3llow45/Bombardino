@@ -8,6 +8,10 @@ public class BossController : MonoBehaviour
     private bool isAttacking = false;
     public float attackDistance = 1.5f;
 
+    [Header("Boss Customization")]
+    public int requiredHits = 2;
+    public float initialScale = 1f;
+
     private int shotCount = 0;
     private bool hasChangedAnimation = false;
 
@@ -16,6 +20,8 @@ public class BossController : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator == null) Debug.LogError("Boss Animator missing!");
         if (player == null) Debug.LogError("Player not assigned!");
+
+        transform.localScale = new Vector3(initialScale, initialScale, initialScale);
     }
 
     void Update()
@@ -59,7 +65,7 @@ public class BossController : MonoBehaviour
             shotCount++;
             Debug.Log("Boss shot count: " + shotCount);
 
-            if (shotCount >= 50 && !hasChangedAnimation)
+            if (shotCount >= requiredHits && !hasChangedAnimation)
             {
                 hasChangedAnimation = true;
                 if (animator != null)
