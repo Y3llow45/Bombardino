@@ -36,25 +36,10 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    public void RestartGame()
-    {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     public void MainMenu()
     {
         Time.timeScale = 1f;
-        int currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-        SceneManager.LoadScene("Level" + currentLevel);
-        if (currentLevel < 2)
-        {
-            PlayerPrefs.SetInt("CurrentLevel", currentLevel + 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("CurrentLevel", 1);
-        }
+        SceneManager.LoadScene("Level1");
     }
 
     public void SpawnSoldiers(int amount)
